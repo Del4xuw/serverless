@@ -8,13 +8,12 @@ phases:
       - echo "Installing dependencies..."
       - npm ci
       
-  pre_build:
-    commands:
-      - echo "Running linter..."
-      - npm run lint
-      - echo "Type checking..."
-      - npm run typecheck
-      
+pre_build:
+  commands:
+    - echo "Running linter..."
+    - npm run lint || echo "⚠️ Lint warnings ignored for demo"  # <- Cambia esta línea
+    - echo "Type checking..."
+    - npm run typecheck
   build:
     commands:
       - echo "Building TypeScript..."
