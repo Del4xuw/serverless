@@ -5,33 +5,33 @@ phases:
     runtime-versions:
       nodejs: 20
     commands:
-      - echo "Node version:"
-      - node --version
       - echo "Installing dependencies..."
       - npm ci
       
-  pre_build:
-    commands:
-      - echo "Running linter (warnings only)..."
-      - npm run lint || true  # <- Cambia esto: || true ignora el error
-      - echo "Type checking..."
-      - npm run typecheck || true  # <- Y esto también
-      
+pre_build:
+  commands:
+    - echo "Running linter..."
+    - npm run lint || echo "⚠️ Lint warnings ignored for demo"  # <- Cambia esta línea
+    - echo "Type checking..."
+    - npm run typecheck
+
   build:
     commands:
       - echo "Building TypeScript..."
       - npm run build
       - echo "Running tests..."
-      - npm test -- --passWithNoTests
+      - npm test
       
   post_build:
     commands:
+      - echo "Packaging for Lambda..."
+      - npm prune --production
       - |
         if [ $CODEBUILD_BUILD_SUCCEEDING -eq 1 ]; then
-          echo "✅ Build successful! Deploying to AWS Lambda..."
-          npx serverless deploy --stage dev --region us-east-1 --verbose
+          echo "Tests passed! Deploying to AWS Lambda..."
+          npx serverless deploy --stage $STAGE --region $AWS_REGION
         else
-          echo "❌ Build failed! Skipping deployment."
+          echo "Tests failed! Skipping deployment."
           exit 1
         fi
 
@@ -39,8 +39,12 @@ artifacts:
   files:
     - '**/*'
   base-directory: .serverless
-  name: serverless-artifacts
 
 cache:
   paths:
     - 'node_modules/**/*'
+
+env:
+  variables:
+    STAGE: dev
+    AWS_REGION: us-east-1
