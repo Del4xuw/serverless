@@ -53,3 +53,4 @@ export const handler = async (
     return serverError(`Health check failed: ${errorMessage}`);
   }
 };
+console.log('Demo for senior');

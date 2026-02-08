@@ -1,0 +1,61 @@
+{
+    "projects": [
+        {
+            "name": "serverless-api-build",
+            "arn": "arn:aws:codebuild:us-east-1:427810728305:project/serverless-api-build",
+            "description": "CI/CD pipeline for serverless API",
+            "source": {
+                "type": "GITHUB",
+                "location": "https://github.com/Del4xuw/serverless.git",
+                "gitCloneDepth": 1,
+                "gitSubmodulesConfig": {
+                    "fetchSubmodules": false
+                },
+                "buildspec": "buildspec.yml",
+                "reportBuildStatus": false,
+                "insecureSsl": false
+            },
+            "secondarySources": [],
+            "secondarySourceVersions": [],
+            "artifacts": {
+                "type": "NO_ARTIFACTS"
+            },
+            "secondaryArtifacts": [],
+            "cache": {
+                "type": "NO_CACHE"
+            },
+            "environment": {
+                "type": "LINUX_CONTAINER",
+                "image": "aws/codebuild/standard:7.0",
+                "computeType": "BUILD_GENERAL1_SMALL",
+                "environmentVariables": [],
+                "privilegedMode": false,
+                "imagePullCredentialsType": "CODEBUILD"
+            },
+            "serviceRole": "arn:aws:iam::427810728305:role/service-role/CodeBuildServiceRole",
+            "timeoutInMinutes": 15,
+            "queuedTimeoutInMinutes": 480,
+            "encryptionKey": "arn:aws:kms:us-east-1:427810728305:alias/aws/s3",
+            "tags": [],
+            "created": "2026-02-08T18:13:24.959000-04:00",
+            "lastModified": "2026-02-08T18:46:40.046000-04:00",
+            "badge": {
+                "badgeEnabled": false
+            },
+            "logsConfig": {
+                "cloudWatchLogs": {
+                    "status": "ENABLED",
+                    "groupName": "/aws/codebuild/serverless-api",
+                    "streamName": "build-log"
+                },
+                "s3Logs": {
+                    "status": "DISABLED",
+                    "encryptionDisabled": false
+                }
+            },
+            "fileSystemLocations": [],
+            "projectVisibility": "PRIVATE"
+        }
+    ],
+    "projectsNotFound": []
+}
