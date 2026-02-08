@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  serverless-api:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: serverless-api-dev
+    ports:
+      - "3000:3000"
+    volumes:
+      # Mount source code for hot-reload
+      - ./src:/app/src:delegated
+      - ./tests:/app/tests:delegated
+      - ./serverless.yml:/app/serverless.yml:delegated
+      - ./tsconfig.json:/app/tsconfig.json:delegated
+      - ./package.json:/app/package.json:delegated
+      # Use named volume for node_modules to improve performance
+      - node_modules:/app/node_modules
+    environment:
+      - NODE_ENV=dev
+      - LOG_LEVEL=debug
+      - SERVICE_NAME=serverless-typescript-api
+      # Disable AWS SDK from trying to reach EC2 metadata service
+      - AWS_ACCESS_KEY_ID=local
+      - AWS_SECRET_ACCESS_KEY=local
+      - AWS_REGION=us-east-1
+    stdin_open: true
+    tty: true
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - serverless-network
+    restart: unless-stopped
+
+# Named volumes
+volumes:
+  node_modules:
+    driver: local
+
+# Custom network
+networks:
+  serverless-network:
+    driver: bridge

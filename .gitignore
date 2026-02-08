@@ -1,0 +1,51 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Build output
+.build/
+dist/
+*.js.map
+
+# Serverless
+.serverless/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Testing
+coverage/
+.nyc_output/
+junit.xml
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# AWS
+.aws-sam/
+
+# TypeScript
+*.tsbuildinfo
+
+# Docker
+docker-compose.override.yml
