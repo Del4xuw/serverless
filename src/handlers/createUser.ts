@@ -12,15 +12,6 @@ import { CreateUserInput } from '../models/user';
 /**
  * Create user endpoint handler
  * POST /api/users
- *
- * Request Body:
- * {
- *   "email": "user@example.com",
- *   "firstName": "John",
- *   "lastName": "Doe"
- * }
- *
- * Returns the newly created user with generated ID and timestamps
  */
 export const handler = async (
   event: APIGatewayProxyEvent,
@@ -29,7 +20,7 @@ export const handler = async (
   try {
     console.log('[CreateUser] Creating new user');
 
-    // Parse the request body
+    // Parse request body
     const body = safeJsonParse<CreateUserInput>(event.body);
 
     if (!body) {
@@ -37,8 +28,15 @@ export const handler = async (
       return badRequest('Request body must be valid JSON');
     }
 
-    // Validate the input
-    const validation = validateCreateUserInput(body);
+    // Normalize / sanitize input BEFORE validation
+    const normalizedBody: CreateUserInput = {
+      email: body.email?.trim().toLowerCase(),
+      firstName: body.firstName?.trim(),
+      lastName: body.lastName?.trim(),
+    };
+
+    // Validate normalized input
+    const validation = validateCreateUserInput(normalizedBody);
 
     if (!validation.isValid) {
       console.warn('[CreateUser] Validation failed:', validation.errors);
@@ -46,17 +44,13 @@ export const handler = async (
     }
 
     // Check if email already exists
-    if (userService.emailExists(body.email)) {
-      console.warn(`[CreateUser] Email already exists: ${body.email}`);
+    if (userService.emailExists(normalizedBody.email)) {
+      console.warn(`[CreateUser] Email already exists: ${normalizedBody.email}`);
       return badRequest('A user with this email already exists');
     }
 
-    // Create the user
-const newUser = userService.createUser({
-  email: body.email.toLowerCase().trim(),        // <- Agrega .trim()
-  firstName: body.firstName.trim(),              // <- Agrega .trim()
-  lastName: body.lastName.trim(),                // <- Agrega .trim()
-});
+    // Create user
+    const newUser = userService.createUser(normalizedBody);
 
     console.log(`[CreateUser] Successfully created user: ${newUser.id}`);
 
@@ -64,7 +58,9 @@ const newUser = userService.createUser({
   } catch (error) {
     console.error('[CreateUser] Error creating user:', error);
 
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+    const errorMessage =
+      error instanceof Error ? error.message : 'Unknown error occurred';
+
     return serverError(`Failed to create user: ${errorMessage}`);
   }
 };
