@@ -1,0 +1,36 @@
+{
+  "name": "serverless-api-build",
+  "description": "CI/CD for serverless API",
+  "source": {
+    "type": "GITHUB",
+    "location": "https://github.com/Del4xuw/serverless.git",
+    "gitCloneDepth": 1,
+    "buildspec": "buildspec.yml",
+    "reportBuildStatus": false
+  },
+  "artifacts": {
+    "type": "NO_ARTIFACTS"
+  },
+  "cache": {
+    "type": "LOCAL",
+    "modes": ["LOCAL_CUSTOM_CACHE"]
+  },
+  "environment": {
+    "type": "LINUX_CONTAINER",
+    "image": "aws/codebuild/standard:7.0",
+    "computeType": "BUILD_GENERAL1_SMALL",
+    "environmentVariables": [
+      {
+        "name": "STAGE",
+        "value": "dev"
+      }
+    ]
+  },
+  "serviceRole": "arn:aws:iam::427810728305:role/CodeBuildServiceRole",
+  "logsConfig": {
+    "cloudWatchLogs": {
+      "status": "ENABLED",
+      "groupName": "/aws/codebuild/serverless-api"
+    }
+  }
+}
