@@ -11,7 +11,7 @@ const createMockEvent = (body: object | null): APIGatewayProxyEvent => ({
   body: body ? JSON.stringify(body) : null,
   headers: { 'Content-Type': 'application/json' },
   multiValueHeaders: {},
-  httpMethod: 'POST',
+  httpMethod: 'GET',
   isBase64Encoded: false,
   path: '/api/users',
   pathParameters: null,
@@ -23,7 +23,7 @@ const createMockEvent = (body: object | null): APIGatewayProxyEvent => ({
     apiId: 'api-id',
     authorizer: null,
     protocol: 'HTTP/1.1',
-    httpMethod: 'POST',
+    httpMethod: 'GET',
     identity: {
       accessKey: null,
       accountId: null,
@@ -90,7 +90,7 @@ describe('Create User Handler', () => {
     expect(body.data.user.lastName).toBe('User');
     expect(body.data.user).toHaveProperty('id');
     expect(body.data.user).toHaveProperty('createdAt');
-    expect(body.data.user).toHaveProperty('updatedAt');
+    expect(body.data.user.email).toHaveProperty('updatedAt');
   });
 
   it('should return 400 when body is missing', async () => {
