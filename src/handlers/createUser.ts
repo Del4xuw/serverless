@@ -52,11 +52,11 @@ export const handler = async (
     }
 
     // Create the user
-    const newUser = userService.createUser({
-      email: body.email,
-      firstName: body.firstName,
-      lastName: body.lastName,
-    });
+const newUser = userService.createUser({
+  email: body.email.toLowerCase().trim(),        // <- Agrega .trim()
+  firstName: body.firstName.trim(),              // <- Agrega .trim()
+  lastName: body.lastName.trim(),                // <- Agrega .trim()
+});
 
     console.log(`[CreateUser] Successfully created user: ${newUser.id}`);
 
